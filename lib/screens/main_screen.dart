@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'home_screen.dart';
+import 'search_screen.dart';
+import 'watchlist_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,20 +18,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final pages = [
       const HomeScreen(),
-      _PlaceholderPage(
-        icon: Icons.search_rounded,
-        title: 'Поиск фильмов',
-        subtitle: 'Здесь появится поиск по каталогу.',
-      ),
-      _PlaceholderPage(
-        icon: Icons.bookmarks_outlined,
-        title: 'Моя коллекция',
-        subtitle: 'Здесь будут списки просмотра.',
-      ),
+      const SearchScreen(),
+      const WatchlistScreen(),
       _PlaceholderPage(
         icon: Icons.rate_review_outlined,
         title: 'Отзывы',
-        subtitle: 'Здесь появится лента отзывов о фильмах.',
+        subtitle: 'Здесь будут личные рецензии, привязанные к фильмам.',
       ),
       _PlaceholderPage(
         icon: Icons.person_outline_rounded,

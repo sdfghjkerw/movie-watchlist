@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Movie {
   final String title;
   final int? releaseYear;
@@ -13,12 +15,14 @@ class Movie {
 
   void printInfo() {
     final year = releaseYear?.toString() ?? 'Год неизвестен';
-    print('$title ($year) — рейтинг $rating');
+    stdout.writeln('$title ($year) — рейтинг $rating');
   }
 }
 
-void main() {
-  final movies = <Movie>[
+// Учебная имитация асинхронной загрузки, без API и доступа к сети.
+Future<List<Movie>> loadMovies() async {
+  await Future<void>.delayed(const Duration(milliseconds: 10));
+  return <Movie>[
     const Movie(
       title: 'Interstellar',
       releaseYear: 2014,
@@ -28,10 +32,18 @@ void main() {
     const Movie(title: 'Inception', releaseYear: 2010, rating: 8.8),
     const Movie(title: 'New Movie', rating: 7.5),
   ];
+}
 
-  final watchlist = movies.where((movie) => !movie.isWatched).toList();
+List<Movie> selectWatchlist(List<Movie> movies) {
+  return movies.where((movie) => !movie.isWatched).toList();
+}
 
-  print('Фильмов в списке: ${watchlist.length}');
+Future<void> main() async {
+  final movies = await loadMovies();
+
+  final watchlist = selectWatchlist(movies);
+
+  stdout.writeln('Фильмов в списке: ${watchlist.length}');
 
   for (final movie in watchlist) {
     movie.printInfo();

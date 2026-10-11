@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+
+import 'catalog_fixture.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_watchlist/learning/week_03/provider_demo.dart';
@@ -42,7 +46,13 @@ void main() {
   testWidgets('Details and collection share current app state across routes', (
     tester,
   ) async {
-    await tester.pumpWidget(const MovieWatchlistApp());
+    await tester.pumpWidget(
+      riverpod.ProviderScope(
+        overrides: staticCatalogOverrides,
+        child: const MovieWatchlistApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(MovieCard).first);
     await tester.pumpAndSettle();
     final toggle = find.byKey(const ValueKey('toggle-watchlist'));
@@ -54,7 +64,7 @@ void main() {
     await tester.tap(toggle);
     await tester.pump();
     expect(find.text('Удалить из списка'), findsOneWidget);
-    await tester.pageBack();
+    await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Коллекция'));
     await tester.pumpAndSettle();

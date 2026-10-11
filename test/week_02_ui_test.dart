@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import 'catalog_fixture.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,6 +21,7 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       await tester.pumpWidget(
         ProviderScope(
+          overrides: staticCatalogOverrides,
           child: MaterialApp(
             theme: brightness == Brightness.dark
                 ? AppTheme.darkTheme
@@ -27,6 +31,7 @@ void main() {
         ),
       );
 
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(MovieCard).first);
       await tester.pumpAndSettle();
       expect(find.byType(MovieDetailsScreen), findsOneWidget);
@@ -38,9 +43,14 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Поиск'));
       await tester.pumpAndSettle();
-      expect(find.text('Открой для себя'), findsOneWidget);
-      expect(tester.widget<TextField>(find.byType(TextField)).readOnly, isTrue);
-      await tester.tap(find.text('Perfect Days'));
+      await tester.enterText(find.byType(TextField), 'Perfect Days');
+      await tester.pump(const Duration(milliseconds: 450));
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).readOnly,
+        isFalse,
+      );
+      await tester.tap(find.text('Perfect Days').last);
       await tester.pumpAndSettle();
       expect(find.text('Perfect Days'), findsOneWidget);
       await tester.pageBack();

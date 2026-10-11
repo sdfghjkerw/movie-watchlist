@@ -33,7 +33,11 @@ class RecordingRepository implements WatchlistRepository {
 
 class EmptyCatalog implements CatalogRepository {
   @override
-  List<Movie> get movies => const [];
+  Future<List<Movie>> fetchMovies() async => const [];
+  @override
+  Future<List<Movie>> searchMovies(String query) async => const [];
+  @override
+  Future<Movie> fetchMovie(int id) async => throw StateError('No movie');
 }
 
 void main() {
@@ -79,12 +83,12 @@ void main() {
     expect(first.read(watchlistProvider), hasLength(1));
   });
 
-  test('Catalog is injected independently of sample data', () {
+  test('Catalog is injected independently of sample data', () async {
     final container = ProviderContainer(
       overrides: [catalogRepositoryProvider.overrideWithValue(EmptyCatalog())],
     );
     addTearDown(container.dispose);
-    expect(container.read(catalogProvider), isEmpty);
+    expect(await container.read(catalogProvider.future), isEmpty);
   });
 
   testWidgets('Screens accept an empty injected catalog without index errors', (

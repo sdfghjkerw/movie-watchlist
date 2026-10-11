@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/models/movie.dart';
+import 'movie_poster.dart';
+import '../localization/app_strings.dart';
 
 class MovieCard extends StatelessWidget {
   const MovieCard({super.key, required this.movie, required this.onTap});
@@ -21,18 +23,9 @@ class MovieCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: colors.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Center(
-                  child: Text(
-                    movie.emoji,
-                    style: const TextStyle(fontSize: 48),
-                  ),
-                ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: MoviePoster(url: movie.posterUrl),
               ),
             ),
             const SizedBox(height: 10),
@@ -44,7 +37,7 @@ class MovieCard extends StatelessWidget {
             ),
             const SizedBox(height: 3),
             Text(
-              '${movie.year} · ${movie.genre}',
+              '${movie.year ?? 'Год неизвестен'.tr(context)} · ${movie.genre.tr(context)}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -58,7 +51,7 @@ class MovieCard extends StatelessWidget {
                 Icon(Icons.star_rounded, size: 15, color: colors.secondary),
                 const SizedBox(width: 4),
                 Text(
-                  movie.rating.toStringAsFixed(1),
+                  movie.rating?.toStringAsFixed(1) ?? '—',
                   style: const TextStyle(fontSize: 12),
                 ),
               ],

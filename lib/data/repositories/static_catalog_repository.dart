@@ -4,5 +4,12 @@ import '../sample_data/movies.dart';
 
 class StaticCatalogRepository implements CatalogRepository {
   @override
-  List<Movie> get movies => sampleMovies;
+  Future<List<Movie>> fetchMovies() async => sampleMovies;
+  @override
+  Future<List<Movie>> searchMovies(String query) async => sampleMovies
+      .where((movie) => movie.title.toLowerCase().contains(query.toLowerCase()))
+      .toList();
+  @override
+  Future<Movie> fetchMovie(int id) async =>
+      sampleMovies.firstWhere((movie) => movie.id == id);
 }

@@ -11,19 +11,27 @@ class WatchlistController extends Notifier<List<Movie>> {
   @override
   List<Movie> build() => ref.watch(watchlistRepositoryProvider).movies;
 
-  void toggle(Movie movie) {
+  Future<void> toggle(Movie movie) async {
     final repository = ref.read(watchlistRepositoryProvider);
-    if (state.any((item) => item.id == movie.id)) {
-      repository.remove(movie.id);
-    } else {
-      repository.add(movie);
+    try {
+      final result = state.any((item) => item.id == movie.id)
+          ? repository.remove(movie.id)
+          : repository.add(movie);
+      state = repository.movies;
+      await result;
+    } finally {
+      if (ref.mounted) state = repository.movies;
     }
-    state = repository.movies;
   }
 
-  void remove(int id) {
+  Future<void> remove(int id) async {
     final repository = ref.read(watchlistRepositoryProvider);
-    repository.remove(id);
-    state = repository.movies;
+    try {
+      final result = repository.remove(id);
+      state = repository.movies;
+      await result;
+    } finally {
+      if (ref.mounted) state = repository.movies;
+    }
   }
 }

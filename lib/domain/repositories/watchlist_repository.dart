@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import '../models/movie.dart';
 
 abstract interface class WatchlistRepository {
   List<Movie> get movies;
-  void add(Movie movie);
-  void remove(int id);
+  FutureOr<void> add(Movie movie);
+  FutureOr<void> remove(int id);
 }

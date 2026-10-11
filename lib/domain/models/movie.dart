@@ -1,9 +1,12 @@
 class Movie {
   final int id;
   final String title;
-  final int year;
+  final int? year;
   final String genre;
-  final double rating;
+  final double? rating;
+  final String? posterUrl;
+  final String? originalTitle;
+  final int? runtimeMinutes;
   final String description;
   final String emoji;
   final bool isInWatchlist;
@@ -19,5 +22,8 @@ class Movie {
     required this.emoji,
     this.isInWatchlist = false,
     this.isWatched = false,
+    this.posterUrl,
+    this.originalTitle,
+    this.runtimeMinutes,
   });
 }

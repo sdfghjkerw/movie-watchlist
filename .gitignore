@@ -46,3 +46,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Local TMDB launch configuration (contains credentials)
+/.vscode/launch.json
+/.vscode/tmdb.local.json

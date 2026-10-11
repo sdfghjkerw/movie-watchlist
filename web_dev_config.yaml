@@ -1,0 +1,4 @@
+# Stable origin for browser-local Hive and SharedPreferences data.
+server:
+  host: localhost
+  port: 7357

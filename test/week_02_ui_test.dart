@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:movie_watchlist/screens/main_screen.dart';
 import 'package:movie_watchlist/screens/movie_details_screen.dart';
 import 'package:movie_watchlist/theme/app_theme.dart';
@@ -15,11 +17,13 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       await tester.pumpWidget(
-        MaterialApp(
-          theme: brightness == Brightness.dark
-              ? AppTheme.darkTheme
-              : AppTheme.lightTheme,
-          home: const MainScreen(),
+        ProviderScope(
+          child: MaterialApp(
+            theme: brightness == Brightness.dark
+                ? AppTheme.darkTheme
+                : AppTheme.lightTheme,
+            home: const MainScreen(),
+          ),
         ),
       );
 

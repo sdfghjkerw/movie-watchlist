@@ -2,13 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_watchlist/app/providers.dart';
+import 'package:movie_watchlist/app/router.dart';
 import 'package:movie_watchlist/data/repositories/in_memory_watchlist_repository.dart';
 import 'package:movie_watchlist/domain/models/movie.dart';
 import 'package:movie_watchlist/domain/repositories/catalog_repository.dart';
 import 'package:movie_watchlist/domain/repositories/watchlist_repository.dart';
 import 'package:movie_watchlist/presentation/state/watchlist_controller.dart';
 import 'package:movie_watchlist/sample_data/movies.dart';
-import 'package:movie_watchlist/presentation/screens/main_screen.dart';
 
 class RecordingRepository implements WatchlistRepository {
   RecordingRepository(this.movie);
@@ -94,12 +94,14 @@ void main() {
   testWidgets('Screens accept an empty injected catalog without index errors', (
     tester,
   ) async {
+    final router = buildAppRouter();
+    addTearDown(router.dispose);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           catalogRepositoryProvider.overrideWithValue(EmptyCatalog()),
         ],
-        child: const MaterialApp(home: MainScreen()),
+        child: MaterialApp.router(routerConfig: router),
       ),
     );
     await tester.tap(find.text('Коллекция'));

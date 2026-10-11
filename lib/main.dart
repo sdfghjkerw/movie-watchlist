@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app/providers.dart';
+import 'app/router.dart';
 import 'app/tmdb_configuration.dart';
 import 'app/local_storage.dart';
 import 'presentation/state/settings_controller.dart';
 import 'presentation/localization/app_strings.dart';
 
-import 'screens/main_screen.dart';
 import 'theme/app_theme.dart';
 
 Future<void> main() async {
@@ -58,9 +58,10 @@ class MovieWatchlistApp extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, _) {
           final settings = ref.watch(settingsProvider);
+          final router = ref.watch(appRouterProvider);
           return AppLanguage(
             language: settings.language,
-            child: MaterialApp(
+            child: MaterialApp.router(
               title: 'Movie Watchlist',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
@@ -73,7 +74,7 @@ class MovieWatchlistApp extends StatelessWidget {
               locale: Locale(settings.language),
               supportedLocales: const [Locale('ru'), Locale('en')],
               localizationsDelegates: GlobalMaterialLocalizations.delegates,
-              home: const MainScreen(),
+              routerConfig: router,
             ),
           );
         },

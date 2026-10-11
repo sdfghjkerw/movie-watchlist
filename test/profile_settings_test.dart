@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:movie_watchlist/app/providers.dart';
+import 'package:movie_watchlist/app/router.dart';
 import 'package:movie_watchlist/data/local/avatar_picker.dart';
 import 'package:movie_watchlist/data/local/settings_store.dart';
 import 'package:movie_watchlist/data/repositories/profile_repositories.dart';
@@ -212,10 +213,12 @@ void main() {
       await container
           .read(watchlistProvider.notifier)
           .toggle(sampleMovies.first);
+      final router = buildAppRouter(initialLocation: '/profile');
+      addTearDown(router.dispose);
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: ProfileScreen()),
+          child: MaterialApp.router(routerConfig: router),
         ),
       );
       await tester.pumpAndSettle();

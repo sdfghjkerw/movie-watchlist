@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../state/profile_controller.dart';
 import '../state/diary_controller.dart';
@@ -8,8 +9,6 @@ import '../localization/app_strings.dart';
 import '../widgets/profile_avatar.dart';
 import '../widgets/profile_editor.dart';
 import '../widgets/movie_poster.dart';
-import 'movie_details_screen.dart';
-import 'settings_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -105,10 +104,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           IconButton(
             key: const ValueKey('open-settings'),
             tooltip: 'Настройки'.tr(context),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute<void>(builder: (_) => const SettingsScreen()),
-            ),
+            onPressed: () => context.push('/profile/settings'),
             icon: const Icon(Icons.settings_outlined),
           ),
           const SizedBox(width: 8),
@@ -283,11 +279,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 child: InkWell(
                   key: ValueKey('profile-film-${entry.movie.id}'),
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (_) => MovieDetailsScreen(movie: entry.movie),
-                    ),
+                  onTap: () => context.push(
+                    '/movie/${entry.movie.id}',
+                    extra: entry.movie,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(4),

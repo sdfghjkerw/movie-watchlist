@@ -5,8 +5,8 @@ import 'catalog_fixture.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:movie_watchlist/screens/main_screen.dart';
-import 'package:movie_watchlist/screens/movie_details_screen.dart';
+import 'package:movie_watchlist/app/router.dart';
+import 'package:movie_watchlist/presentation/screens/movie_details_screen.dart';
 import 'package:movie_watchlist/theme/app_theme.dart';
 import 'package:movie_watchlist/widgets/movie_card.dart';
 
@@ -19,14 +19,16 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
+      final router = buildAppRouter();
+      addTearDown(router.dispose);
       await tester.pumpWidget(
         ProviderScope(
           overrides: staticCatalogOverrides,
-          child: MaterialApp(
+          child: MaterialApp.router(
+            routerConfig: router,
             theme: brightness == Brightness.dark
                 ? AppTheme.darkTheme
                 : AppTheme.lightTheme,
-            home: const MainScreen(),
           ),
         ),
       );

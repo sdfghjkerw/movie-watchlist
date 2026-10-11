@@ -1,66 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import 'home_screen.dart';
-import 'search_screen.dart';
-import 'watchlist_screen.dart';
-import 'reviews_screen.dart';
-import 'profile_screen.dart';
 import '../localization/app_strings.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+/// Shared responsive shell for the five persistent navigation branches.
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key, required this.navigationShell});
 
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
+  final StatefulNavigationShell navigationShell;
 
-class _MainScreenState extends State<MainScreen> {
-  int selectedIndex = 0;
+  static const _destinations = [
+    (Icons.home_outlined, Icons.home_rounded, 'Главная'),
+    (Icons.search_rounded, Icons.search_rounded, 'Поиск'),
+    (Icons.bookmarks_outlined, Icons.bookmarks_rounded, 'Коллекция'),
+    (Icons.rate_review_outlined, Icons.rate_review, 'Отзывы'),
+    (Icons.person_outline_rounded, Icons.person_rounded, 'Профиль'),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      const HomeScreen(),
-      const SearchScreen(),
-      const WatchlistScreen(),
-      const ReviewsScreen(),
-      const ProfileScreen(),
+    final selectedIndex = navigationShell.currentIndex;
+    final destinations = [
+      for (final item in _destinations)
+        NavigationRailDestination(
+          icon: Icon(item.$1),
+          selectedIcon: Icon(item.$2),
+          label: Text(item.$3.tr(context)),
+        ),
     ];
 
-    return Scaffold(
-      body: IndexedStack(index: selectedIndex, children: pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) {
-          setState(() => selectedIndex = index);
-        },
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Главная'.tr(context),
+    void selectBranch(int index) => navigationShell.goBranch(
+      index,
+      initialLocation: index == selectedIndex,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 720) {
+          return Scaffold(
+            body: Row(
+              children: [
+                SafeArea(
+                  child: NavigationRail(
+                    selectedIndex: selectedIndex,
+                    onDestinationSelected: selectBranch,
+                    labelType: NavigationRailLabelType.all,
+                    destinations: destinations,
+                  ),
+                ),
+                const VerticalDivider(width: 1),
+                Expanded(child: navigationShell),
+              ],
+            ),
+          );
+        }
+
+        return Scaffold(
+          body: navigationShell,
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: selectedIndex,
+            onDestinationSelected: selectBranch,
+            destinations: [
+              for (final item in _destinations)
+                NavigationDestination(
+                  icon: Icon(item.$1),
+                  selectedIcon: Icon(item.$2),
+                  label: item.$3.tr(context),
+                ),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.search_rounded),
-            label: 'Поиск'.tr(context),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bookmarks_outlined),
-            selectedIcon: Icon(Icons.bookmarks_rounded),
-            label: 'Коллекция'.tr(context),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.rate_review_outlined),
-            selectedIcon: Icon(Icons.rate_review),
-            label: 'Отзывы'.tr(context),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline_rounded),
-            selectedIcon: Icon(Icons.person_rounded),
-            label: 'Профиль'.tr(context),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

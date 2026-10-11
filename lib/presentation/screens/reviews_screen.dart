@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/models/diary_entry.dart';
 import '../localization/app_strings.dart';
 import '../state/diary_controller.dart';
 import '../widgets/movie_poster.dart';
-import 'movie_details_screen.dart';
 
 enum _ReviewFilter { all, withText, ratingOnly }
 
@@ -201,11 +201,9 @@ class _ReviewEntryRow extends StatelessWidget {
       child: InkWell(
         key: ValueKey('review-entry-${entry.movie.id}'),
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) =>
-                MovieDetailsScreen(movie: entry.movie, focusDiary: true),
-          ),
+        onTap: () => context.push(
+          '/movie/${entry.movie.id}?focusDiary=true',
+          extra: entry.movie,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 14),

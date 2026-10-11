@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/models/movie.dart';
 import 'movie_poster.dart';
-import '../screens/movie_details_screen.dart';
 import '../localization/app_strings.dart';
 
 class MovieListTile extends StatelessWidget {
@@ -32,11 +32,7 @@ class MovieListTile extends StatelessWidget {
           '${movie.year ?? 'Год неизвестен'.tr(context)} · ${movie.genre.tr(context)}',
         ),
         trailing: Text('★ ${movie.rating?.toStringAsFixed(1) ?? '—'}'),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => MovieDetailsScreen(movie: movie),
-          ),
-        ),
+        onTap: () => context.push('/movie/${movie.id}', extra: movie),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:movie_watchlist/app/providers.dart';
+import 'package:movie_watchlist/app/router.dart';
 import 'package:movie_watchlist/data/repositories/diary_repositories.dart';
 import 'package:movie_watchlist/domain/models/diary_entry.dart';
 import 'package:movie_watchlist/presentation/screens/movie_details_screen.dart';
@@ -71,10 +72,12 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       final container = await makeDiary();
       addTearDown(container.dispose);
+      final router = buildAppRouter(initialLocation: '/reviews');
+      addTearDown(router.dispose);
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: ReviewsScreen()),
+          child: MaterialApp.router(routerConfig: router),
         ),
       );
       await tester.pumpAndSettle();
@@ -193,10 +196,12 @@ void main() {
       addTearDown(tester.view.resetDevicePixelRatio);
       final container = await makeDiary();
       addTearDown(container.dispose);
+      final router = buildAppRouter(initialLocation: '/reviews');
+      addTearDown(router.dispose);
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const MaterialApp(home: ReviewsScreen()),
+          child: MaterialApp.router(routerConfig: router),
         ),
       );
       await tester.pumpAndSettle();

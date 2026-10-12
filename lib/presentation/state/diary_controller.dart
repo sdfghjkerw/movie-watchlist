@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../domain/models/diary_entry.dart';
 import '../../domain/models/movie.dart';
+import 'cloud_sync_controller.dart';
 
 final diaryProvider = NotifierProvider<DiaryController, List<DiaryEntry>>(
   DiaryController.new,
@@ -59,5 +62,6 @@ class DiaryController extends Notifier<List<DiaryEntry>> {
     }
     await ref.read(diaryRepositoryProvider).save(entry);
     state = ref.read(diaryRepositoryProvider).entries;
+    unawaited(ref.read(cloudSyncProvider.notifier).saveDiaryEntry(entry));
   }
 }

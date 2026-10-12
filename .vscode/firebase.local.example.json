@@ -1,0 +1,28 @@
+{
+  "platforms": {
+    "web": {
+      "apiKey": "",
+      "appId": "",
+      "messagingSenderId": "",
+      "projectId": "",
+      "authDomain": "",
+      "storageBucket": ""
+    },
+    "android": {
+      "apiKey": "",
+      "appId": "",
+      "messagingSenderId": "",
+      "projectId": ""
+    },
+    "ios": {
+      "apiKey": "",
+      "appId": "",
+      "messagingSenderId": "",
+      "projectId": "",
+      "iosBundleId": ""
+    }
+  },
+  "googleWebClientId": "",
+  "googleIosClientId": "",
+  "vapidKey": ""
+}

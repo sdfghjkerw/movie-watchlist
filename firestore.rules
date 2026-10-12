@@ -1,0 +1,69 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owns(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      allow read, write: if false;
+
+      match /profile/{documentId} {
+        allow read, delete: if owns(userId);
+        allow create, update: if owns(userId)
+          && documentId == 'identity'
+          && request.resource.data.keys().hasOnly([
+            'name', 'email', 'avatar', 'updatedAt'
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() <= 120
+          && request.resource.data.email is string
+          && request.resource.data.email.size() <= 254
+          && (!('avatar' in request.resource.data)
+            || request.resource.data.avatar is bytes)
+          && request.resource.data.updatedAt == request.time;
+      }
+
+      match /diary/{movieId} {
+        allow read, delete: if owns(userId);
+        allow create, update: if owns(userId)
+          && request.resource.data.keys().hasOnly([
+            'movie', 'favorite', 'watchedAt', 'score', 'review', 'updatedAt'
+          ])
+          && request.resource.data.movie is map
+          && request.resource.data.movie.id is int
+          && request.resource.data.movie.id == int(movieId)
+          && request.resource.data.favorite is bool
+          && (request.resource.data.watchedAt == null
+            || request.resource.data.watchedAt is timestamp)
+          && (request.resource.data.score == null
+            || (request.resource.data.score is int
+              && request.resource.data.score >= 1
+              && request.resource.data.score <= 10))
+          && request.resource.data.review is string
+          && request.resource.data.review.size() <= 10000
+          && request.resource.data.updatedAt == request.time;
+      }
+
+      match /watchlist/{movieId} {
+        allow read, delete: if owns(userId);
+        allow create, update: if owns(userId)
+          && request.resource.data.keys().hasOnly(['movie', 'updatedAt'])
+          && request.resource.data.movie is map
+          && request.resource.data.movie.id is int
+          && request.resource.data.movie.id == int(movieId)
+          && request.resource.data.updatedAt == request.time;
+      }
+
+      match /devices/{tokenId} {
+        allow read, delete: if owns(userId);
+        allow create, update: if owns(userId)
+          && request.resource.data.keys().hasOnly(['token', 'platform', 'updatedAt'])
+          && request.resource.data.token is string
+          && request.resource.data.platform is string
+          && request.resource.data.updatedAt == request.time;
+      }
+    }
+  }
+}

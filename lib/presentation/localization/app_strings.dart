@@ -96,6 +96,13 @@ const translations = <String, String>{
   'Нет просмотренных фильмов.': 'No watched movies yet.',
   'Нет избранных фильмов.': 'No favorite movies yet.',
   'Главная': 'Home',
+  'На главную': 'Go to Home',
+  'Firebase Auth не разрешает домен этой страницы. Открой локальную версию по адресу http://localhost:8765 вместо 127.0.0.1. Для другого адреса добавь домен в Authentication → Settings → Authorized domains.':
+      'Firebase Auth does not allow this page’s domain. For local use, open http://localhost:8765 instead of 127.0.0.1. For another address, add its domain under Authentication → Settings → Authorized domains.',
+  'Браузер заблокировал окно Google. Разреши всплывающие окна и повтори попытку.':
+      'The browser blocked the Google window. Allow pop-ups for this site and try again.',
+  'Вход через Google отменён до завершения.':
+      'Google sign-in was cancelled before it completed.',
   'Поиск': 'Search',
   'Коллекция': 'My collection',
   'Отзывы': 'Reviews',

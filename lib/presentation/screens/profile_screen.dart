@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/firebase_providers.dart';
 import '../state/profile_controller.dart';
 import '../state/diary_controller.dart';
 import '../state/watchlist_controller.dart';
@@ -57,6 +58,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profile = ref.watch(profileProvider);
     final diary = ref.watch(diaryProvider);
     final watchlist = ref.watch(watchlistProvider);
+    final authUser = ref
+        .watch(authStateProvider)
+        .whenOrNull(data: (value) => value);
     final highlights = diary
         .where((entry) => entry.score != null || entry.review.isNotEmpty)
         .take(3)
@@ -345,11 +349,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ),
             const SizedBox(height: 24),
-            Text(
-              'Это локальный профиль. Вход в аккаунт пока не подключён.'.tr(
-                context,
+            Card(
+              child: ListTile(
+                key: const ValueKey('open-cloud-account'),
+                leading: Icon(
+                  authUser == null
+                      ? Icons.cloud_outlined
+                      : Icons.cloud_done_outlined,
+                ),
+                title: Text(
+                  authUser == null
+                      ? 'Аккаунт и синхронизация'.tr(context)
+                      : 'Синхронизация включена'.tr(context),
+                ),
+                subtitle: Text(
+                  authUser?.email ??
+                      'Войди, чтобы перенести дневник в облако.'.tr(context),
+                ),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.push('/account'),
               ),
-              style: type.bodySmall?.copyWith(color: colors.onSurfaceVariant),
             ),
             const SizedBox(height: 16),
           ],

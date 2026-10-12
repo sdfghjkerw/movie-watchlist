@@ -21,6 +21,12 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.byType(NavigationBar), findsOneWidget);
+    expect(
+      tester
+          .widgetList<NavigationDestination>(find.byType(NavigationDestination))
+          .every((destination) => destination.tooltip == ''),
+      isTrue,
+    );
 
     await tester.tap(find.text('Поиск'));
     await tester.pumpAndSettle();
@@ -56,6 +62,10 @@ void main() {
 
     expect(find.byType(NavigationRail), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
+    expect(
+      tester.widget<TooltipVisibility>(find.byType(TooltipVisibility)).visible,
+      isFalse,
+    );
     expect(tester.takeException(), isNull);
   });
 

@@ -41,11 +41,16 @@ class MainScreen extends StatelessWidget {
             body: Row(
               children: [
                 SafeArea(
-                  child: NavigationRail(
-                    selectedIndex: selectedIndex,
-                    onDestinationSelected: selectBranch,
-                    labelType: NavigationRailLabelType.all,
-                    destinations: destinations,
+                  // Avoid a Dart Web DDC assertion in the rail tooltip's
+                  // OverlayPortal while keeping labels and semantics.
+                  child: TooltipVisibility(
+                    visible: false,
+                    child: NavigationRail(
+                      selectedIndex: selectedIndex,
+                      onDestinationSelected: selectBranch,
+                      labelType: NavigationRailLabelType.all,
+                      destinations: destinations,
+                    ),
                   ),
                 ),
                 const VerticalDivider(width: 1),
@@ -66,6 +71,7 @@ class MainScreen extends StatelessWidget {
                   icon: Icon(item.$1),
                   selectedIcon: Icon(item.$2),
                   label: item.$3.tr(context),
+                  tooltip: '',
                 ),
             ],
           ),

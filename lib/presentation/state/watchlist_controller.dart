@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../domain/models/movie.dart';
+import 'cloud_sync_controller.dart';
 
 final watchlistProvider = NotifierProvider<WatchlistController, List<Movie>>(
   WatchlistController.new,
@@ -19,6 +22,15 @@ class WatchlistController extends Notifier<List<Movie>> {
           : repository.add(movie);
       state = repository.movies;
       await result;
+      if (state.any((item) => item.id == movie.id)) {
+        unawaited(
+          ref.read(cloudSyncProvider.notifier).saveWatchlistMovie(movie),
+        );
+      } else {
+        unawaited(
+          ref.read(cloudSyncProvider.notifier).removeWatchlistMovie(movie.id),
+        );
+      }
     } finally {
       if (ref.mounted) state = repository.movies;
     }
@@ -30,6 +42,7 @@ class WatchlistController extends Notifier<List<Movie>> {
       final result = repository.remove(id);
       state = repository.movies;
       await result;
+      unawaited(ref.read(cloudSyncProvider.notifier).removeWatchlistMovie(id));
     } finally {
       if (ref.mounted) state = repository.movies;
     }

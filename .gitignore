@@ -50,3 +50,4 @@ app.*.map.json
 # Local TMDB launch configuration (contains credentials)
 /.vscode/launch.json
 /.vscode/tmdb.local.json
+/.vscode/firebase.local.json

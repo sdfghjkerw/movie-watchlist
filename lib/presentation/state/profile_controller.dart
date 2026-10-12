@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../domain/models/local_profile.dart';
+import 'cloud_sync_controller.dart';
 
 final profileProvider = NotifierProvider<ProfileController, LocalProfile>(
   ProfileController.new,
@@ -15,6 +18,7 @@ class ProfileController extends Notifier<LocalProfile> {
     final result = _pending.then((_) async {
       await ref.read(profileRepositoryProvider).save(profile);
       if (ref.mounted) state = profile;
+      unawaited(ref.read(cloudSyncProvider.notifier).saveProfile(profile));
     });
     _pending = result.catchError((Object _) {});
     return result;

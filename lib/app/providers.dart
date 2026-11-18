@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:typed_data';
 
 import '../data/local/avatar_picker.dart';
+import '../data/repositories/open_street_map_cinema_repository.dart';
+import '../data/services/android_device_service.dart';
+import '../data/services/device_location_service.dart';
 
 import '../data/repositories/in_memory_watchlist_repository.dart';
 import '../data/repositories/tmdb_catalog_repository.dart';
@@ -14,6 +17,7 @@ import '../data/local/catalog_cache.dart';
 import '../data/local/poster_cache.dart';
 import '../data/local/settings_store.dart';
 import '../domain/models/app_settings.dart';
+import '../domain/models/device_status.dart';
 import '../domain/repositories/diary_repository.dart';
 import '../presentation/state/settings_controller.dart';
 import '../presentation/state/catalog_controller.dart';
@@ -21,11 +25,27 @@ import '../presentation/state/catalog_controller.dart';
 import 'package:http/http.dart' as http;
 
 import '../domain/models/movie.dart';
+import '../domain/repositories/cinema_repository.dart';
 import '../domain/repositories/catalog_repository.dart';
 import '../domain/repositories/watchlist_repository.dart';
 
 // Composition root: только здесь выбираются конкретные источники данных.
 final tmdbApiKeyProvider = Provider<String>((ref) => '');
+final deviceLocationServiceProvider = Provider<DeviceLocationService>(
+  (ref) => GeolocatorDeviceLocationService(),
+);
+final androidDeviceServiceProvider = Provider<AndroidDeviceService>(
+  (ref) => const AndroidDeviceService(),
+);
+final androidDeviceStatusProvider = FutureProvider<DeviceStatus>(
+  (ref) => ref.watch(androidDeviceServiceProvider).getStatus(),
+  retry: (_, _) => null,
+);
+final cinemaRepositoryProvider = Provider<CinemaRepository>((ref) {
+  final client = http.Client();
+  ref.onDispose(client.close);
+  return OpenStreetMapCinemaRepository(client: client);
+});
 final initialSettingsProvider = Provider<AppSettings>(
   (ref) => const AppSettings(),
 );

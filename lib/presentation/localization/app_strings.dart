@@ -97,10 +97,8 @@ const translations = <String, String>{
   'Нет избранных фильмов.': 'No favorite movies yet.',
   'Главная': 'Home',
   'На главную': 'Go to Home',
-  'Firebase Auth не разрешает домен этой страницы. Открой локальную версию по адресу http://localhost:8765 вместо 127.0.0.1. Для другого адреса добавь домен в Authentication → Settings → Authorized domains.':
-      'Firebase Auth does not allow this page’s domain. For local use, open http://localhost:8765 instead of 127.0.0.1. For another address, add its domain under Authentication → Settings → Authorized domains.',
-  'Браузер заблокировал окно Google. Разреши всплывающие окна и повтори попытку.':
-      'The browser blocked the Google window. Allow pop-ups for this site and try again.',
+  'Firebase Auth не разрешает домен этой страницы. Открой локальную версию по адресу http://localhost:8765 вместо 127.0.0.1. Для другого адреса добавь домен в Authentication → Settings → Authorized domains.': 'Firebase Auth does not allow this page’s domain. For local use, open http://localhost:8765 instead of 127.0.0.1. For another address, add its domain under Authentication → Settings → Authorized domains.',
+  'Браузер заблокировал окно Google. Разреши всплывающие окна и повтори попытку.': 'The browser blocked the Google window. Allow pop-ups for this site and try again.',
   'Вход через Google отменён до завершения.':
       'Google sign-in was cancelled before it completed.',
   'Поиск': 'Search',
@@ -137,6 +135,13 @@ const translations = <String, String>{
   'Системная': 'System',
   'Язык': 'Language',
   'Данные сохраняются на этом устройстве.': 'Data is saved on this device.',
+  'Устройство': 'Device',
+  'Состояние устройства': 'Device status',
+  'Не удалось получить данные устройства.': 'Could not read device status.',
+  'Читаем состояние батареи…': 'Reading battery status…',
+  'Заряд недоступен': 'Battery level unavailable',
+  'Заряжается': 'Charging',
+  'Обновить': 'Refresh',
   'Поиск фильмов': 'Search movies',
   'Название фильма': 'Movie title',
   'Очистить': 'Clear',
@@ -163,4 +168,31 @@ const translations = <String, String>{
       'Saved catalog · updating from network',
   'Не удалось сохранить. Попробуй ещё раз.':
       'Could not save. Please try again.',
+  'Кинотеатры рядом': 'Nearby cinemas',
+  'Кинотеатры для просмотра этого фильма': 'Cinemas for watching this film',
+  'Найти кинотеатры рядом': 'Find cinemas nearby',
+  'Точные координаты передаются публичному Overpass API для поиска и не сохраняются приложением.': 'Exact coordinates are sent to the public Overpass API for the search and are not stored by the app.',
+  'Выполняется запрос к публичному Overpass API. Координаты не сохраняются приложением.': 'A request is being made to the public Overpass API. Coordinates are not stored by the app.',
+  'Ищем местоположение…': 'Finding your location…',
+  'Ищем кинотеатры…': 'Searching for cinemas…',
+  'Повторить поиск': 'Search again',
+  'Повторить загрузку': 'Retry loading',
+  'Разреши доступ к местоположению в браузере или настройках устройства и повтори попытку.': 'Allow location access in your browser or device settings, then try again.',
+  'Не удалось быстро получить геопозицию. Проверь настройки браузера и повтори попытку.': 'Could not get your location in time. Check your browser settings and try again.',
+  'Доступ к местоположению запрещён. Разреши его для этого сайта и повтори попытку.':
+      'Location access was denied. Allow it for this site and try again.',
+  'Включи службы геолокации на устройстве и повтори попытку.':
+      'Turn on location services on your device and try again.',
+  'Не удалось определить местоположение.': 'Could not determine your location.',
+  'Кинотеатры поблизости не найдены.': 'No nearby cinemas found.',
+  'Сервис карты временно перегружен. Подожди немного и повтори поиск.':
+      'The map service is temporarily busy. Wait a little and search again.',
+  'Адрес не указан': 'Address unavailable',
+  'Показать на карте': 'Show on map',
+  'Кинотеатр': 'Cinema',
+  'Ты здесь': 'You are here',
+  'Не удалось загрузить кинотеатры. Проверь подключение и повтори попытку.':
+      'Could not load cinemas. Check your connection and try again.',
+  'км': 'km',
+  'м': 'm',
 };

@@ -2,7 +2,8 @@ import '../../domain/models/movie.dart';
 import '../../domain/repositories/catalog_repository.dart';
 import '../local/catalog_cache.dart';
 
-class OfflineCatalogRepository implements CachedCatalogRepository {
+class OfflineCatalogRepository
+    implements CachedCatalogRepository, PaginatedCatalogRepository {
   OfflineCatalogRepository({
     required this.remote,
     required this.cache,
@@ -38,38 +39,71 @@ class OfflineCatalogRepository implements CachedCatalogRepository {
 
   @override
   Future<List<Movie>> fetchMovies() async {
-    updating = true;
+    return (await fetchMoviesPage(1)).results;
+  }
+
+  @override
+  Future<MoviePage> fetchMoviesPage(int page) async {
+    final cacheKey = page == 1 ? catalogKey : '$catalogKey:page:$page';
+    if (page == 1) updating = true;
     try {
-      final movies = await remote.fetchMovies();
-      await cache.writeList(catalogKey, movies, language);
-      usedCache = false;
-      warning = null;
-      return movies;
+      final result = remote is PaginatedCatalogRepository
+          ? await (remote as PaginatedCatalogRepository).fetchMoviesPage(page)
+          : MoviePage(
+              page: 1,
+              totalPages: 1,
+              results: await remote.fetchMovies(),
+            );
+      await cache.writeList(cacheKey, result.results, language);
+      if (page == 1) {
+        usedCache = false;
+        warning = null;
+      }
+      return result;
     } catch (_) {
-      final cached = cachedMovies;
+      final cached =
+          cache.readList(cacheKey) ?? (page == 1 ? cachedMovies : null);
       if (cached == null) rethrow;
       usedCache = true;
       warning = 'Нет обновления из сети. Показан сохранённый каталог.';
-      return cached;
+      return MoviePage(page: page, totalPages: page, results: cached);
     } finally {
-      updating = false;
+      if (page == 1) updating = false;
     }
   }
 
   @override
   Future<List<Movie>> searchMovies(String query) async {
-    if (query.trim().isEmpty) return [];
-    final key = 'search:$language:${query.trim().toLowerCase()}';
+    return (await searchMoviesPage(query, 1)).results;
+  }
+
+  @override
+  Future<MoviePage> searchMoviesPage(String query, int page) async {
+    if (query.trim().isEmpty) {
+      return MoviePage(page: 1, totalPages: 1, results: const []);
+    }
+    final baseKey = 'search:$language:${query.trim().toLowerCase()}';
+    final key = page == 1 ? baseKey : '$baseKey:page:$page';
     try {
-      final movies = await remote.searchMovies(query);
-      await cache.writeList(key, movies, language);
-      cachedSearches.remove(_normalized(query));
-      return movies;
+      final result = remote is PaginatedCatalogRepository
+          ? await (remote as PaginatedCatalogRepository).searchMoviesPage(
+              query,
+              page,
+            )
+          : MoviePage(
+              page: 1,
+              totalPages: 1,
+              results: await remote.searchMovies(query),
+            );
+      await cache.writeList(key, result.results, language);
+      if (page == 1) cachedSearches.remove(_normalized(query));
+      return result;
     } catch (_) {
-      final cached = cache.readList(key);
+      final cached =
+          cache.readList(key) ?? (page == 1 ? cache.readList(baseKey) : null);
       if (cached == null) rethrow;
       cachedSearches.add(_normalized(query));
-      return cached;
+      return MoviePage(page: page, totalPages: page, results: cached);
     }
   }
 

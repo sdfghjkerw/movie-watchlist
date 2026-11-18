@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
 import '../../domain/models/movie.dart';
@@ -185,6 +186,14 @@ class _MovieDetailsScreenState extends ConsumerState<MovieDetailsScreen> {
           label: Text(
             (isSaved ? 'Удалить из списка' : 'В список просмотра').tr(context),
           ),
+        ),
+        const SizedBox(height: 10),
+        OutlinedButton.icon(
+          key: const ValueKey('nearby-cinemas'),
+          onPressed: () =>
+              context.push('/movie/${movie.id}/cinemas', extra: movie),
+          icon: const Icon(Icons.location_on_outlined),
+          label: Text('Кинотеатры рядом'.tr(context)),
         ),
       ],
     );

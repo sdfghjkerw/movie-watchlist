@@ -87,12 +87,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     'user-not-found' => 'Email или пароль не подошли.',
     'operation-not-allowed' =>
       'Включи этот способ входа в настройках Firebase Authentication.',
-    'unauthorized-domain' =>
-      'Firebase Auth не разрешает домен этой страницы. Открой локальную версию по адресу http://localhost:8765 вместо 127.0.0.1. Для другого адреса добавь домен в Authentication → Settings → Authorized domains.',
-    'popup-blocked' =>
-      'Браузер заблокировал окно Google. Разреши всплывающие окна и повтори попытку.',
-    'popup-closed-by-user' || 'cancelled-popup-request' =>
-      'Вход через Google отменён до завершения.',
+    'unauthorized-domain' => 'Firebase Auth не разрешает домен этой страницы. Открой локальную версию по адресу http://localhost:8765 вместо 127.0.0.1. Для другого адреса добавь домен в Authentication → Settings → Authorized domains.',
+    'popup-blocked' => 'Браузер заблокировал окно Google. Разреши всплывающие окна и повтори попытку.',
+    'popup-closed-by-user' ||
+    'cancelled-popup-request' => 'Вход через Google отменён до завершения.',
     'network-request-failed' => 'Проверь подключение к интернету.',
     _ => 'Firebase не смог выполнить запрос ($code).',
   };

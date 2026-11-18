@@ -50,6 +50,9 @@ dependencies:
   cloud_firestore: ^6.10.0
   firebase_messaging: ^16.7.0
   google_sign_in: ^7.2.0
+  maplibre_gl: ^0.28.0
+  geolocator: ^14.1.2
+  cached_network_image: 4.0.7
 
 dev_dependencies:
   shared_preferences_web: 2.4.3

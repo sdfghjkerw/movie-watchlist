@@ -9,6 +9,7 @@ import '../presentation/screens/auth_screen.dart';
 import '../presentation/screens/cloud_account_screen.dart';
 import '../presentation/screens/main_screen.dart';
 import '../presentation/screens/movie_details_screen.dart';
+import '../presentation/screens/cinema_map_screen.dart';
 import '../presentation/screens/profile_screen.dart';
 import '../presentation/screens/reviews_screen.dart';
 import '../presentation/screens/search_screen.dart';
@@ -129,6 +130,18 @@ GoRouter buildAppRouter({
           movie: state.extra is Movie ? state.extra! as Movie : null,
           focusDiary: state.uri.queryParameters['focusDiary'] == 'true',
         ),
+        routes: [
+          GoRoute(
+            path: 'cinemas',
+            builder: (_, state) {
+              final movie = state.extra;
+              if (movie is Movie) return CinemaMapScreen(movie: movie);
+              return CinemaMapRouteScreen(
+                movieId: int.parse(state.pathParameters['id']!),
+              );
+            },
+          ),
+        ],
       ),
     ],
     errorBuilder: (context, state) =>
@@ -208,6 +221,44 @@ class MovieRouteScreen extends ConsumerWidget {
             return null;
           },
         );
+  }
+}
+
+class CinemaMapRouteScreen extends ConsumerWidget {
+  const CinemaMapRouteScreen({super.key, required this.movieId});
+
+  final int movieId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final details = ref.watch(movieDetailsProvider(movieId));
+    return details.when(
+      data: (movie) => CinemaMapScreen(movie: movie),
+      loading: () => Scaffold(
+        appBar: AppBar(leading: const BackButton()),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Scaffold(
+        appBar: AppBar(leading: const BackButton()),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(error.toString(), textAlign: TextAlign.center),
+                const SizedBox(height: 12),
+                FilledButton(
+                  onPressed: () =>
+                      ref.invalidate(movieDetailsProvider(movieId)),
+                  child: Text('Повторить'.tr(context)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

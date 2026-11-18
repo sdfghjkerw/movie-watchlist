@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../localization/app_strings.dart';
 import '../state/settings_controller.dart';
+import '../widgets/device_status_card.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -142,6 +144,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               'Данные сохраняются на этом устройстве.'.tr(context),
               style: type.bodySmall?.copyWith(color: colors.onSurfaceVariant),
             ),
+            if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) ...[
+              const SizedBox(height: 28),
+              Text('Устройство'.tr(context), style: type.titleLarge),
+              const SizedBox(height: 12),
+              const DeviceStatusCard(),
+            ],
           ],
         ),
       ),

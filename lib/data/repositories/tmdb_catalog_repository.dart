@@ -8,7 +8,8 @@ import '../../domain/models/movie.dart';
 import '../../domain/repositories/catalog_repository.dart';
 import '../remote/movie_dto.dart';
 
-class TmdbCatalogRepository implements CatalogRepository {
+class TmdbCatalogRepository
+    implements CatalogRepository, PaginatedCatalogRepository {
   TmdbCatalogRepository({
     required this.client,
     required this.apiKey,
@@ -70,17 +71,23 @@ class TmdbCatalogRepository implements CatalogRepository {
     }
   }
 
-  Future<List<Movie>> _list(
-    String path, [
+  Future<MoviePage> _moviePage(
+    String path,
+    int page, [
     Map<String, String> parameters = const {},
   ]) async {
-    final json = await _get(path, parameters);
+    final json = await _get(path, {'page': '$page', ...parameters});
     try {
       final results = json['results'];
       if (results is! List) throw const FormatException();
-      return List.unmodifiable(
-        results.map(
-          (item) => MovieDto.fromJson(item as Map<String, dynamic>).toMovie(),
+      final totalPages = json['total_pages'];
+      return MoviePage(
+        page: (json['page'] as num?)?.toInt() ?? page,
+        totalPages: totalPages is num ? totalPages.toInt() : page,
+        results: List.unmodifiable(
+          results.map(
+            (item) => MovieDto.fromJson(item as Map<String, dynamic>).toMovie(),
+          ),
         ),
       );
     } catch (_) {
@@ -91,11 +98,22 @@ class TmdbCatalogRepository implements CatalogRepository {
   }
 
   @override
-  Future<List<Movie>> fetchMovies() => _list('movie/popular');
+  Future<List<Movie>> fetchMovies() async => (await fetchMoviesPage(1)).results;
+
+  @override
+  Future<MoviePage> fetchMoviesPage(int page) =>
+      _moviePage('movie/popular', page);
+
   @override
   Future<List<Movie>> searchMovies(String query) => query.trim().isEmpty
       ? Future.value(const [])
-      : _list('search/movie', {
+      : searchMoviesPage(query, 1).then((page) => page.results);
+
+  @override
+  Future<MoviePage> searchMoviesPage(String query, int page) =>
+      query.trim().isEmpty
+      ? Future.value(MoviePage(page: 1, totalPages: 1, results: const []))
+      : _moviePage('search/movie', page, {
           'query': query.trim(),
           'include_adult': 'false',
         });
